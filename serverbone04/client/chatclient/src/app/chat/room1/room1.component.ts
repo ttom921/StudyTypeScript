@@ -32,8 +32,8 @@ export class Room1Component implements OnInit {
 
     this.socketService.onEvent(Event.CONNECT).subscribe(() => {
       console.log("connedted");
-      //取得列表
-      this.socketService.getNamespaceList();
+      // //取得列表
+      // this.socketService.getNamespaceList();
     });
 
     this.socketService.onEvent(Event.DISCONNECT).subscribe(() => {
@@ -48,8 +48,13 @@ export class Room1Component implements OnInit {
     this.socketService.onMessage().subscribe((data) => {
       let fmtmsg = `[client ns:${this.curnamespace}]<Message> Message=${data.Message}`;
     });
-    this.socketService.OnGetNamespaceList().subscribe((data) => {
-      let fmtmsg = `[client ns:${this.curnamespace}]<OnGetNamespaceList> namespacelst=${data.result}`;
+    // this.socketService.OnGetNamespaceList().subscribe((data) => {
+    //   let fmtmsg = `[client ns:${this.curnamespace}]<OnGetNamespaceList> namespacelst=${data.result}`;
+    //   console.log(fmtmsg);
+    //   this.namespacelst = data.result;
+    // });
+    this.socketService.OnUpdateNamespaceList().subscribe((data) => {
+      let fmtmsg = `[client ns:${this.curnamespace}]<UpdateNamespaceList> namespacelst=${data.result}`;
       console.log(fmtmsg);
       this.namespacelst = data.result;
     });
@@ -75,8 +80,8 @@ export class Room1Component implements OnInit {
     let fmtmsg = `[client ns:${this.curnamespace}]<createNamespace>=${this.textNamespace}`
     console.log(fmtmsg);
     this.socketService.createNamespace(this.textNamespace);
-    //取得列表
-    this.socketService.getNamespaceList();
+    // //取得列表
+    // this.socketService.getNamespaceList();
   }
   public joinToNamespace(): void {
     let fmtmsg = `[client ns:${this.curnamespace}]<JoinToApp>=${this.seltextNamespace}`

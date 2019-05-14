@@ -48,16 +48,21 @@ export class SocketService {
       this.socket.on("Message", (data: any) => observer.next(data));
     });
   }
-  public getNamespaceList() {
-    this.socket.emit("GetNamespaceList");
-  }
-  public OnGetNamespaceList(): Observable<any> {
-    return new Observable<any>(observer => {
-      this.socket.on("GetNamespaceList", (data: any) => observer.next(data));
-    });
-  }
+  // public getNamespaceList() {
+  //   this.socket.emit("GetNamespaceList");
+  // }
+  // public OnGetNamespaceList(): Observable<any> {
+  //   return new Observable<any>(observer => {
+  //     this.socket.on("GetNamespaceList", (data: any) => observer.next(data));
+  //   });
+  // }
   public createNamespace(nsname: string) {
     this.socket.emit("createNamespace", { name: nsname });
+  }
+  public OnUpdateNamespaceList(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.socket.on("updateNamespaceList", (data: any) => observer.next(data));
+    });
   }
   public joinToNamespace(nsname: string): void {
     this.socket.emit("JoinToApp", { namespace: nsname });

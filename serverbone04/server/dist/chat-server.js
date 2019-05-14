@@ -48,25 +48,35 @@ class ChatServer {
         this.io.of('').on('connection', (socket) => {
             console.log("[server]<connect> socket.id=%s", socket.id);
             socket.emit('Welcome', { SocketId: socket.id });
+            // 更新namespace列表
+            let senddata = { result: ChatServer.getNamespacelist() };
+            console.log("[server]<updateNamespaceList> socket.id=%s result=" + senddata);
+            this.io.emit('updateNamespaceList', senddata);
             socket.on("chatmessage", (m) => {
                 console.log("[server]<chatmessage>:%s", m);
                 this.io.emit("chatmessage", m);
             });
+            let self = this;
             socket.on('createNamespace', function (data) {
                 console.log("[server]<createNamespace> socket.id=%s", socket.id);
                 let nsmodel = ChatServer.createNamespace(data);
-                let fmt = `Namespace created ${nsmodel.id}`;
-                let sendmsg = { Message: fmt };
-                console.log("[server]" + sendmsg.Message);
-                socket.emit('Message', sendmsg);
+                //let fmt = `Namespace created ${nsmodel.id}`;
+                //let sendmsg = { Message: fmt };
+                //console.log("[server]" + sendmsg.Message);
+                //socket.emit('Message', sendmsg);
+                // tslint:disable: no-shadowed-variable
+                // 更新namespace列表
+                let senddata = { result: ChatServer.getNamespacelist() };
+                console.log("[server]<updateNamespaceList> socket.id=%s result=" + senddata);
+                self.io.emit('updateNamespaceList', senddata);
             });
-            // 取得namespace列表
-            socket.on("GetNamespaceList", () => {
-                //console.log("[server]<GetNamespaceList> socket.id=%s", socket.id);
-                let sendmsg = { result: ChatServer.getNamespacelist() };
-                console.log("[server]<GetNamespaceList> socket.id=%s result=" + sendmsg);
-                socket.emit('GetNamespaceList', sendmsg);
-            });
+            // // 取得namespace列表
+            // socket.on("GetNamespaceList", () => {
+            //     //console.log("[server]<GetNamespaceList> socket.id=%s", socket.id);
+            //     let sendmsg = { result: ChatServer.getNamespacelist() };
+            //     console.log("[server]<GetNamespaceList> socket.id=%s result=" + sendmsg);
+            //     socket.emit('GetNamespaceList', sendmsg);
+            // });
             //加入namspace
             socket.on("JoinToApp", (data) => {
                 let namespaceToConnect = this.searchObjectOnArray(data.namespace);
