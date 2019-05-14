@@ -1,0 +1,11 @@
+<h1>群聊</h1>
+<ul id="messages">
+  <li *ngFor="let item of messages">{{item}}</li>
+</ul>
+<div id="inputdiv">
+  輸入:<input type="text" id="msginput" #textbox [(ngModel)]="textValue">
+  <button id="msgbtn" (click)="sendchatmessage()">發送</button>
+  <hr>
+  <!-- <input type="file" id="imgfile" multiple="multiple">
+  <button id="imgbtn" >發送圖片</button> -->
+</div>
