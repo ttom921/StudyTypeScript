@@ -49,6 +49,15 @@ export class ChatServer {
         // });
 
         //-----------------------------------
+        // middleware
+        // this.io.use((socket, next) => {
+        //     let token = socket.handshake.query.token;
+        //     console.log("[server use] token=%s", token);
+        //     //if (isValid(token)) {
+        //     return next();
+        //     //}
+        //     //return next(new Error('authentication error'));
+        // });
         //連線處理
         this.io.of('').on('connection', (socket) => {
             console.log("[server]<connect> socket.id=%s", socket.id);

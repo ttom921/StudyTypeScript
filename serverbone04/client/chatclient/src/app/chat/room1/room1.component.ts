@@ -20,6 +20,7 @@ export class Room1Component implements OnInit {
   constructor(private socketService: SocketService) { }
 
   ngOnInit() {
+    //this.SERVER_URL = this.SERVER_URL + "?token=abcde";
     this.initIoConnection(this.SERVER_URL);
   }
   private initIoConnection(nspace: string): void {
@@ -45,17 +46,17 @@ export class Room1Component implements OnInit {
       this.messages.push(fmtmsg);
     });
     this.socketService.onMessage().subscribe((data) => {
-      let fmtmsg = `[client  ns:${this.curnamespace}]<Message> Message=${data.Message}`;
+      let fmtmsg = `[client ns:${this.curnamespace}]<Message> Message=${data.Message}`;
     });
     this.socketService.OnGetNamespaceList().subscribe((data) => {
-      let fmtmsg = `[client  ns:${this.curnamespace}]<OnGetNamespaceList> namespacelst=${data.result}`;
+      let fmtmsg = `[client ns:${this.curnamespace}]<OnGetNamespaceList> namespacelst=${data.result}`;
       console.log(fmtmsg);
       this.namespacelst = data.result;
     });
     // 加入新的namespace
     this.socketService.OnJoinToApp().subscribe((data) => {
       let connecturl = this.SERVER_URL + "/" + data.namespace;
-      let fmtmsg = `[client  ns:${this.curnamespace}]<JoinToApp> namespace=${connecturl}`;
+      let fmtmsg = `[client ns:${this.curnamespace}]<JoinToApp> namespace=${connecturl}`;
       this.messages.push(fmtmsg);
       console.log(fmtmsg);
       this.socketService.disconnect();
@@ -64,21 +65,21 @@ export class Room1Component implements OnInit {
     });
   }
   public sendchatmessage(): void {
-    let fmtmsg = `[client  ns:${this.curnamespace}]<chatmessage>=${this.textValue}`
+    let fmtmsg = `[client ns:${this.curnamespace}]<chatmessage>=${this.textValue}`
     console.log(fmtmsg);
     this.socketService.send(this.textValue);
     this.textValue = "";
   }
   //--------------------
   public createNamespace(): void {
-    let fmtmsg = `[client  ns:${this.curnamespace}]<createNamespace>=${this.textNamespace}`
+    let fmtmsg = `[client ns:${this.curnamespace}]<createNamespace>=${this.textNamespace}`
     console.log(fmtmsg);
     this.socketService.createNamespace(this.textNamespace);
     //取得列表
     this.socketService.getNamespaceList();
   }
   public joinToNamespace(): void {
-    let fmtmsg = `[client  ns:${this.curnamespace}]<JoinToApp>=${this.seltextNamespace}`
+    let fmtmsg = `[client ns:${this.curnamespace}]<JoinToApp>=${this.seltextNamespace}`
     console.log(fmtmsg);
     this.socketService.joinToNamespace(this.seltextNamespace);
 
