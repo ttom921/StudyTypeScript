@@ -74,6 +74,8 @@ export class Room1Component implements OnInit {
     let fmtmsg = `[client  ns:${this.curnamespace}]<createNamespace>=${this.textNamespace}`
     console.log(fmtmsg);
     this.socketService.createNamespace(this.textNamespace);
+    //取得列表
+    this.socketService.getNamespaceList();
   }
   public joinToNamespace(): void {
     let fmtmsg = `[client  ns:${this.curnamespace}]<JoinToApp>=${this.seltextNamespace}`
