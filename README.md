@@ -11,6 +11,8 @@ serverbone04 可以動態建立`namespace`
 
 目前是來參考[讓 TypeScript 成為你全端開發的 ACE！](https://ithelp.ithome.com.tw/users/20120614/ironman/2685)因為有在使用ts，但是沒有深入的了解它，所以來學習它
 
+https://github.com/Alexius-Huang/Iron-Man-Competition
+
 要先來安裝NodeJS, 我的版本是
 ```
 node -v
@@ -80,3 +82,48 @@ console.log(message.touupercase());
 ```
 
 最重要是會指正錯誤在那裏，並且不讓你compiler成功
+
+## Day02 前線維護，型別推論X註記-Type Inference & Annotation
+
+### 型別有哪些?
+
+在回答型別推論與註記在TypeScript運作的機制之前，要先知道TypeScript內建定義了哪些**基礎型別(Types)**
+
+- 原始型別Primitive Types：包含`number`,`string`,`boolean`,`undefined`,`null`,ES6介紹的`symbol`與時常會在函式型別裡看到的`void`
+- 物件型別Object Types：這些型別的共同特徵是*從原始型別或物件型別組合出來的複合型態*(比如物件裡面的Key-Value個別是`string`和`number`型別組合成的)：
+
+  - 基礎物件型別：包含JSON物件、陣列(`Array<T>`或`T[]`)，類吸以及類別產生出的物件（也就是Class以及藉由Class`new`出來的Instance）
+  - TypeScrip擴充型別：即Enum與Tuple，內建在TypeScript
+  - 函式型別Function Types：類似於`(input)=>(Output)`這種格式的型別
+- 明文型別Literal Type：一個值本身也可以成為一個型別，比如字串`Hello world--若成為某變數的型別的話，它只能存剛好等於`"Hello world"字串值；位通常會看到的是Object Literal Type
+- 特殊型別：即`any`、`never`（TS 2.0釋出）以及最新的`unknown`型別(TS3.0釋出)
+- 複合型別：即`union`與`intersection`的型別組合，但是跟其它型別的差別在於：這類型的型別都是由邏輯運算子組成，分別為`|`與`&`
+- 通用型別Generic Types：一種讓程式碼可以變得更加通用的絕招
+
+建立測試程式
+
+```
+// 沒有進到 01-basic 資料夾記得：
+$ cd ./01-basic
+
+// 初始化 TS 編譯器設定檔
+$ tsc --init
+```
+
+tsconfig.json 設定
+
+將裡面的 `strictNullCheck` 選項改成 `true`
+
+```
+/* tsconfig.json */
+{
+  "compilerOptions": {
+    /*  ...  */
+    "strictNullChecks": true,
+    /* ... */
+  }
+}
+```
+
+
+
