@@ -236,6 +236,7 @@ var ToyotaRV = ['Toyota', 'recreational', 'ivory-white', new Date(2019, 3, 15)];
 // 完全對前三個同為 `string` 型別的值對調，儘管意義上錯誤，但 TS 還是不鳥你 ~
 var WTFVehicle = ['taxi', 'yellow', 'Toyota', new Date(2019, 6, 12)];
 //#endregion Day06
+//#region Day07
 var WeekDay;
 (function (WeekDay) {
     WeekDay[WeekDay["Sunday"] = 0] = "Sunday";
@@ -253,8 +254,83 @@ var weekDayOfBirthday = WeekDay.Monday;
 //順向使用
 var TGIF = WeekDay.FriDay;
 console.log(TGIF);
+//結果為 5
 //逆向取回 Enmu 的 Key
 var valueOfTGIF = WeekDay[TGIF];
 console.log(valueOfTGIF);
-//#region Day07
+// 結果為 Friday
 //#endregion Day07
+//#region Day08
+var addOp = function (n1, n2) {
+    return n1 + n2;
+};
+var subtractOp = function (n1, n2) {
+    return n1 - n2;
+};
+var multiplyOp = function (n1, n2) {
+    return n1 * n2;
+};
+var divideOp = function (n1, n2) {
+    return n1 / n2;
+};
+//正確結果！
+var powerOp = function (n1, n2) {
+    return Math.pow(n1, n2);
+};
+// 錯誤：型別錯誤！
+// let wrongPowerOp1: MathOperator = function (n1: string, n2: string) {
+//     return n1 ** n2;
+// }
+//錯誤: 函式型別之回傳型別錯誤
+// let wrongPowerOp2: MathOperator = function (n1: number, n2: number) {
+//     return (n1 ** n2).toString();
+// }
+// 變數被型別化名註記過後，Implicit 'any' 被化解
+var powerOpWithNoParamsAnnotation = function (n1, n2) {
+    return Math.pow(n1, n2);
+};
+var infoAboutMaxwell = {
+    name: 'Maxwell',
+    age: 20,
+    hasPet: false
+};
+// 隨便新增屬性會出錯！
+//infoAboutMaxwell.newInfo="Gradusted from NTUST";
+// 全面覆寫，格式正確就放心！
+infoAboutMaxwell = {
+    name: 'Alexius',
+    age: 18,
+    hasPet: true
+};
+// 全面覆寫，格式錯誤就傷心！
+// infoAboutMaxwell = {
+//     firstName: 'Maxwell',
+//     graduated: true,
+//     age: 20,
+//     hasPet: false,
+// };
+function printInfo(info) {
+    console.log("Name: ".concat(info.name));
+    console.log("Age: ".concat(info.age));
+    console.log("Has Pet? ".concat(info.hasPet));
+}
+// 物件的形式沒有被積極註記為 PersonalInfo，直接
+// 將值暴力帶入函式作為參數 => 驗證錯誤！
+// printInfo({
+//     name: 'Martin',
+//     age: 28,
+//     hasPet: true,
+//     hello: 'world',
+//     nothingSpecial: null,
+// });
+// 物件的形式存入變數，其中該變數沒有被積極註記為
+// PersonInfo，該變數卻被代入函式作為參數 => 竟然通過！？
+var infoAboutMartin = {
+    name: 'Martin',
+    age: 28,
+    hasPet: true,
+    hello: 'world',
+    nothingSpecial: null
+};
+printInfo(infoAboutMartin);
+//#endregion Day09

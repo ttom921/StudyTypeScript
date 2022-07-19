@@ -379,8 +379,131 @@ let powerOp: MathOperator = function (n1: number, n2: number): number {
 let powerOpWithNoParamsAnnotation: MathOperator = function (n1, n2) {
     return n1 ** n2;
 };
-powerOpWithNoParamsAnnotation(
-    '123',
-    '456'
-);
+// 會出現錯誤！
+// powerOpWithNoParamsAnnotation(
+//     '123',
+//     '456'
+// );
 //#endregion Day08
+//#region Day09
+type PersonInfo = {
+    name: string,
+    age: number,
+    hasPet: boolean,
+};
+let infoAboutMaxwell: PersonInfo = {
+    name: 'Maxwell',
+    age: 20,
+    hasPet: false,
+};
+// 隨便新增屬性會出錯！
+//infoAboutMaxwell.newInfo="Gradusted from NTUST";
+
+// 全面覆寫，格式正確就放心！
+infoAboutMaxwell = {
+    name: 'Alexius',
+    age: 18,
+    hasPet: true,
+};
+
+// 全面覆寫，格式錯誤就傷心！
+// infoAboutMaxwell = {
+//     firstName: 'Maxwell',
+//     graduated: true,
+//     age: 20,
+//     hasPet: false,
+// };
+function printInfo(info: PersonInfo) {
+    console.log(`Name: ${info.name}`);
+    console.log(`Age: ${info.age}`);
+    console.log(`Has Pet? ${info.hasPet}`);
+}
+// 物件的形式沒有被積極註記為 PersonalInfo，直接
+// 將值暴力帶入函式作為參數 => 驗證錯誤！
+// printInfo({
+//     name: 'Martin',
+//     age: 28,
+//     hasPet: true,
+
+//     hello: 'world',
+//     nothingSpecial: null,
+// });
+// 物件的形式存入變數，其中該變數沒有被積極註記為
+// PersonInfo，該變數卻被代入函式作為參數 => 竟然通過！？
+let infoAboutMartin = {
+    name: 'Martin',
+    age: 28,
+    hasPet: true,
+
+    hello: 'world',
+    nothingSpecial: null,
+};
+
+printInfo(infoAboutMartin);
+
+
+enum Gender { Male, Female, Other };
+
+type TestAccountInfo = {
+    account: string,
+    password: string,
+    nickname: string | undefined,
+    birth: Date | undefined,
+    gender: Gender | undefined,
+    subscribed: boolean
+};
+
+
+// 依然出錯！
+// let accountMaxwell: TestAccountInfo = {
+//     account: 'nordic.wyvern',
+//     password: '<hashed-password>',
+//     subscribed: false
+// };
+
+type AccountInfo = {
+    account: string,
+    password: string,
+    nickname?: string,
+    birth?: Date,
+    gender?: Gender,
+    subscribed: boolean
+};
+// let accountMaxwell: AccountInfo = {
+//     account: 'nordic.wyvern',
+//     password: '<hashed-password>',
+//     subscribed: false
+// };
+
+
+type AccountSystem = {
+    account: string,
+    password: string,
+    subscribed: boolean,
+};
+
+type AccountPersonalInfo = {
+    nickname?: string,
+    birth?: Date,
+    gender?: Gender,
+};
+//使用複合型別的 Intersection
+type PersonalAccount = AccountSystem & AccountPersonalInfo;
+
+let accountMaxwell: PersonalAccount = {
+    account: 'nordic.wyvern',
+    password: '<hashed-password>',
+    birth: new Date(200, 1, 1),
+    subscribed: false,
+};
+
+
+let additionThreeAsDefault = function (num1: number, num2?: number) {
+    if (num2) {
+        return num1 + num2;
+    }
+    return num1 + 3;
+}
+
+type VehicleInfoWithOptionalElements = [string, string, string?, Date?];
+//#endregion Day09
