@@ -125,5 +125,89 @@ tsconfig.json 設定
 }
 ```
 
+開始先建立好 `index.ts`
 
+```typescript
+// index.ts
+let myName = 'ttom';
+let ang = 20;
+let hasPet = false;
+let nothing = undefined;
+let nothingLiterally = null;
 
+// myName=null;
+// age=true;
+// hasPet="Dog";
+// nothing="something";
+// nothingLiterally="thisa";
+
+// let messageToSend;
+// messageToSend="cat is afraid of...";
+// messageToSend=101010101001010;
+
+// let absoluteNothing:undefined=undefined;
+// let literallyAbsoluteNothing:null=null;
+
+// absoluteNothing=123;
+// literallyAbsoluteNothing="i can't live in";
+
+// let canBeNullableString:string;
+// canBeNullableString='hello';
+
+// canBeNullableString=undefined;
+// canBeNullableString=null;
+
+let absolutelyEitherNullOrString: string | null;
+absolutelyEitherNullOrString = 'assigned with string...';
+absolutelyEitherNullOrString = null;
+absolutelyEitherNullOrString = "assigned with string,again"
+```
+
+## Day03 前線維護，物件型別X完整性理論-Object Types Basics
+
+基礎物件型別-JSON物件格式
+
+結論是--只要格式正確，TypeScript都會給你通過。
+
+#### 重點 1. 基礎物件的型別推論機制
+
+1. JS 物件的型別會**按照物件本身的格式被推論出來**
+2. 可以對物件做出的行為：
+
++ 對物件裡的屬性覆寫值，其**值的型別與該屬性對應的型別相同**
++ 對物件整體覆寫，其**覆寫的物件格式必須完全相同**
+
+1. 常見會被 TS 警告的情形有以下：
+
++ 對物件裡的**屬性插入或覆寫錯誤的型別值**
++ **覆寫整個物件時的格式錯誤**（少一鍵 / 多一鍵 / 沒多沒少鍵，但至少其中一鍵對應值之型別錯誤）
++ **隨意新增原先不存在該物件的屬性**
+
+1. 物件的屬性若直接代入 Nullable Type，則不會被視為 `any` 型別，而是等同於該 Nullable Type 本身的值（`undefined` 型別的值就是 `undefined`；`null` 型別的值就是 `null`）
+2. `delete` 目前在 TS 就算被使用在刪除物件屬性上，TS 依舊不會警告你 （參見這個 [Issue](https://github.com/Microsoft/TypeScript/issues/13783)）（*這個行為可能隨時隨地會被更改掉，不過不知道是什麼時候*）
+
+## Day04前線維護函式型別X積極註記 Function Types
+
+### 函式型別 Function Types
+
+## Day05前線維護陣列型別X型別陣列-Array Types
+
+### 陣列型別Array Types
+
+#### `union` 小提示
+
+```typescript
+let A: T | U | V;
+```
+
+### 重點 2. 陣列的型別推論與註記時機
+
+1. 大部分的狀態下，陣列型別的推論是符合開發者期待的
+2. 除非遇到以下狀況，才需要對儲存陣列型別的變數積極地作型別註記：
+   + **空陣列值必須積極註記**，這是會了要革除 `any` 可能帶來的禍害
+   + **陣列裡的元素沒有你要求的型別**，可以用 `union` 技巧作積極的型別註記
+3. 為了程式碼的可讀性，通常一個陣列擁有多個型別的話（也就是 Heterogenous Type Array），建議還是用 `union` 註記一下，不然要在陣列裡面用人眼遍歷過陣列的每一個值對應的每個型別 —— 跟直接註記比起來：型別註記是比較恰當的選擇喔
+
+## Day 06. 前線維護・陣列與函式 X 陣列與元組 - Array & Functions & Tuples
+
+## Day 07. 前線維護・列舉型別 X 主觀列舉 - Enumerated Types
