@@ -1,4 +1,6 @@
 "use strict";
+// index.ts
+console.log("02-interface-class");
 // 列舉組合化名
 var WeekDayEnum;
 (function (WeekDayEnum) {
@@ -67,5 +69,43 @@ let infoMaxwell = {
     job: 'Front-End',
     nothingSpecial: null,
 };
-printPersonInfo(infoMaxwell);
-//#endregion Day12
+/* 使用擴展過後的 Interface */
+// 正常使用方法
+let accountMaxwell = {
+    email: 'max@example.com',
+    password: '<hashed-password>',
+    subscribed: false,
+    nickname: 'Maxwell',
+    gender: Gender.Male,
+    // birth 可以被省略是因為，該屬性為選用屬性 Optional Property
+};
+function pokeTheDuck(something) {
+    something.makeNoise();
+}
+let maxwellCanBeDuck = {
+    name: 'Maxwell',
+    age: 20,
+    noise: 'He~He~He~He~He~~~',
+    makeNoise() { console.log(this.noise); },
+};
+let kittyCanBeDuck = {
+    color: 'black and white',
+    eyes: 'cute',
+    noise: 'Meow~meow~meow~meow~meowwwwwwwwwww',
+    makeNoise() { console.log(this.noise); },
+};
+let vehicleCanBeDuck = {
+    brand: 'BMW',
+    type: 'motorcycle',
+    noise: 'Vroom! Vroom! Vroooooooooooom!',
+    makeNoise() { console.log('Vrooooooom!!!'); },
+};
+let duckIsLiterallyDuck = {
+    noise: 'Quack~quack~quack~quack~quack~',
+    makeNoise() { console.log('Quack!'); },
+};
+pokeTheDuck(maxwellCanBeDuck);
+pokeTheDuck(kittyCanBeDuck);
+pokeTheDuck(vehicleCanBeDuck);
+pokeTheDuck(duckIsLiterallyDuck);
+//#endregion Day13
