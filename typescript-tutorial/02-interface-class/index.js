@@ -126,11 +126,11 @@ let myDic = {
     1: 'Key is 1',
     [2]: 'Key is 2'
 };
-console.log(myDic['A']);
-console.log(myDic.A);
-console.log(myDic['B']);
-console.log(myDic[1]);
-console.log(myDic[2]);
+// console.log(myDic['A']);
+// console.log(myDic.A);
+// console.log(myDic['B']);
+// console.log(myDic[1]);
+// console.log(myDic[2]);
 // Dictionary 範例
 // 正常使用方式
 let normalDictionary = {
@@ -205,6 +205,17 @@ counter.increment();
 //console.log(counter.value); // 應該要得出 8
 // 呼叫 Counter 介面裡的 reset 方法
 counter.reset();
-// 再呼叫一次 Counter 介面裡的 value 屬性
-//console.log(counter.value); // 應該要得出 5，也就是原本的初始值
-//#endregion Day15
+function logPersonInfo(person) {
+    console.log(`Name: ${person.name}`);
+    console.log(`Age: ${person.age}`);
+    console.log(`Owns a pet? ${person.hasPet}`);
+}
+let maxwellInfo = {
+    name: 'Maxwell',
+    age: 20,
+    hasPet: false,
+    email: 'maxwell@example.com',
+    ownsMotorcycle: false,
+};
+logPersonInfo(maxwellInfo);
+//#endregion Day16
