@@ -135,18 +135,176 @@ function printAccountInfo(input) {
 }
 // 初始化新的提款機
 const machine = new CashMachine();
-console.log('Initialized: ');
-printAccountInfo(machine.currentUser); //<-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
+//console.log('Initialized: ');
+//printAccountInfo(machine.currentUser); //<-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
 // 登入過後
 machine.signIn('Maxwell', '123');
-console.log('Signed In: ');
-printAccountInfo(machine.currentUser); // <-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
+//console.log('Signed In: ');
+//printAccountInfo(machine.currentUser);// <-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
 // 提款 5000 過後
 machine.withdraw(5000);
-console.log('After Withdrawal: ');
-printAccountInfo(machine.currentUser); // <-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
+//console.log('After Withdrawal: ');
+//printAccountInfo(machine.currentUser);// <-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
 // 登出過後
 machine.signOut();
-console.log('Signed Out: ');
-printAccountInfo(machine.currentUser); //<-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
+//console.log('Signed Out: ');
+//printAccountInfo(machine.currentUser); //<-- 因為 currentUser 變成 private 模式，不能在外面被呼叫！
 //#endregion Day19
+//#region Day20
+/* 陽春的交通票務系統 */
+// 使用列舉定義我們的車票種類
+var TransportTicketType;
+(function (TransportTicketType) {
+    TransportTicketType[TransportTicketType["Train"] = 0] = "Train";
+    TransportTicketType[TransportTicketType["MRT"] = 1] = "MRT";
+    TransportTicketType[TransportTicketType["Aviation"] = 2] = "Aviation";
+})(TransportTicketType || (TransportTicketType = {}));
+// 定義名為交通的類別
+class TicketSystem {
+    constructor(type, startingPoint, destination, departureTime) {
+        this.type = type;
+        this.startingPoint = startingPoint;
+        this.destination = destination;
+        this.departureTime = departureTime;
+    }
+    // 計算交通的間隔時間
+    deriveDuration() {
+        // 因為交通方式有三種，所以我們選擇先寫死
+        return [1, 0, 0];
+    }
+    // 計算交通的抵達時間
+    deriveArrivalTime() {
+        const { departureTime } = this;
+        // 從間隔時間導出總共間隔的微秒數
+        const [hours, minutes, seconds] = this.deriveDuration();
+        const durationSeconds = hours * 60 * 60 + minutes * 60 + seconds;
+        const durationMilliseconds = durationSeconds * 1000;
+        // 導出抵達時間
+        const arrivalMilliseconds = departureTime.getTime() + durationMilliseconds;
+        return new Date(arrivalMilliseconds);
+    }
+    // 印出交通票券的詳細內容
+    getTicketInfo() {
+        // 根據 Day 07. 提到的列舉的反射性
+        // 可以反向由值推回列舉的鍵的名稱！
+        const ticketName = TransportTicketType[this.type];
+        const arrivalTime = this.deriveArrivalTime();
+        console.log(`
+      Ticket Type: ${ticketName}
+      Station:     ${this.startingPoint} - ${this.destination}
+      Departure:   ${this.departureTime}
+      Arrival:     ${arrivalTime}
+    `);
+    }
+}
+;
+// 我們來開張火車票～
+const randomTicket = new TicketSystem(
+// 這是火車票！
+TransportTicketType.Train, 
+// 啟程地點
+'Tainan', 
+// 抵達終點
+'Kaohsiung', 
+// 啟程時間 2019/09/01 早上 9 點 00 分 00 秒
+new Date(2019, 8, 1, 9, 0, 0));
+class TrainTicket extends TicketSystem {
+    // 子類別的建構子函式
+    constructor(startingPoint, destination, departureTime) {
+        // 使用 super 將初始化值傳到父類別的建構子函式裡
+        super(TransportTicketType.Train, startingPoint, destination, departureTime);
+        this.stops = [
+            'Pingtung',
+            'Kaohsiung',
+            'Tainan',
+            'Taichung',
+            'Hsinchu',
+            'Taipei',
+        ];
+        this.stationsDetail = [
+            { name: 'Pingtung', nextStop: 'Kaohsiung', duration: [2, 30, 0] },
+            { name: 'Kaohsiung', nextStop: 'Tainan', duration: [1, 45, 30] },
+            { name: 'Tainan', nextStop: 'Taichung', duration: [3, 20, 0] },
+            { name: 'Taichung', nextStop: 'Hsinchu', duration: [2, 30, 30] },
+            { name: 'Hsinchu', nextStop: 'Taipei', duration: [1, 30, 30] },
+        ];
+    }
+    isStopExist(stop) {
+        for (let i = 0; i < this.stops.length; i += 1) {
+            const existedStop = this.stops[i];
+            if (existedStop === stop)
+                return true;
+        }
+        return false;
+    }
+    deriveDuration() {
+        // 我們必須取得啟程站與抵達站
+        const { startingPoint, destination } = this;
+        // 先確保車站的站點是合理的
+        if (this.isStopExist(startingPoint) &&
+            this.isStopExist(destination)) {
+            let time = [0, 0, 0];
+            let stopFound = false;
+            /* 1. 開始進行站點間的運算 */
+            for (let i = 0; i < this.stationsDetail.length; i += 1) {
+                const detail = this.stationsDetail[i];
+                // 啟程站還未找到但是名稱對應到時開始累計交通時間
+                if (!stopFound && detail.name === startingPoint) {
+                    stopFound = true;
+                    time[0] += detail.duration[0];
+                    time[1] += detail.duration[1];
+                    time[2] += detail.duration[2];
+                }
+                // 早已找到啟程站
+                else if (stopFound) {
+                    // 繼續累計交通時間
+                    time[0] += detail.duration[0];
+                    time[1] += detail.duration[1];
+                    time[2] += detail.duration[2];
+                    // 然而，若下一站為終點站則跳出迴圈不再累計
+                    if (detail.nextStop === destination)
+                        break;
+                }
+            }
+            /* 2. 將時間轉換成合理的格式 */
+            // 每六十秒轉一分鐘
+            let minutes = Math.floor(time[2] / 60);
+            time[1] += minutes;
+            time[2] -= minutes * 60;
+            // 每六十分鐘轉一小時
+            let hours = Math.floor(time[1] / 60);
+            time[0] += hours;
+            time[1] -= hours * 60;
+            // 回傳時間的格式 TimeFormat
+            return time;
+        }
+        // `never` 型別的例外，參見 Day 10.
+        throw new Error("Wrong stop name! Please check again!");
+    }
+}
+const trainTicket = new TrainTicket(
+// 啟程自台南
+'Tainan', 
+// 終點到新竹
+'Hsinchu', 
+// 發車時間為 2019/09/01 早上 9:00
+new Date(2019, 8, 1, 9, 0, 0));
+//trainTicket.getTicketInfo();
+/* 使用 super 的注意事項 */
+// 父類別擁有三個成員變數
+class TestParentClass {
+    constructor(p1, p2, p3) {
+        this.p1 = p1;
+        this.p2 = p2;
+        this.p3 = p3;
+    }
+}
+// 子類別繼承父類別，並且呼叫 super 進行初始化物件的動作
+class TestChildClass1 extends TestParentClass {
+    constructor(p1Child, p2Child, p3Child) {
+        super(p1Child, p2Child, p3Child);
+    }
+}
+const objFromChildClass1 = new TestChildClass1(123, 'Hello', true);
+console.log(objFromChildClass1);
+//#endregion Day20
