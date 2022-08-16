@@ -175,6 +175,9 @@ class TicketSystem {
     // 計算交通的抵達時間
     deriveArrivalTime() {
         const { departureTime } = this;
+        //它是 ES6 Destructuring 也就是 “解構式語法”，就是把物件的屬性拔出來變成一個變數
+        //相當等於
+        //const departureTime = this.departureTime;
         // 從間隔時間導出總共間隔的微秒數
         const [hours, minutes, seconds] = this.deriveDuration();
         const durationSeconds = hours * 60 * 60 + minutes * 60 + seconds;
@@ -306,5 +309,34 @@ class TestChildClass1 extends TestParentClass {
     }
 }
 const objFromChildClass1 = new TestChildClass1(123, 'Hello', true);
-console.log(objFromChildClass1);
+//console.log(objFromChildClass1);
+// 子類別繼承父類別，但是沒有實踐建構子函式
+class TestChildClass2 extends TestParentClass {
+}
+// 請仔細查看這一行出現的錯誤訊息：
+//const objFromChildClass2 = new TestChildClass2();
 //#endregion Day20
+//#region Day21
+/* 幾何圓形類別 */
+class CircleGeometry {
+    // 初始化時需要的參數為半徑 radius
+    constructor(radius) {
+        this.radius = radius;
+        this.PI = 3.14;
+    }
+    // 計算圓形的面積
+    area() {
+        return this.PI * (this.radius ** 2);
+    }
+    // 計算圓形的周長
+    circumference() {
+        return 2 * this.PI * this.radius;
+    }
+}
+// 初始化半徑為單位 2 的圓
+const myCircle = new CircleGeometry(2);
+// 計算圓的面積
+console.log(myCircle.area());
+//計算圓的周長
+console.log(myCircle.circumference());
+//#endregion Day21
