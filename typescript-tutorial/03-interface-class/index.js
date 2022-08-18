@@ -336,7 +336,107 @@ class CircleGeometry {
 // 初始化半徑為單位 2 的圓
 const myCircle = new CircleGeometry(2);
 // 計算圓的面積
-console.log(myCircle.area());
+//console.log(myCircle.area());
 //計算圓的周長
-console.log(myCircle.circumference());
+//console.log(myCircle.circumference());
+/* Math 本身就是提供一系列的屬性與方法 */
+// 圓周率 PI
+Math.PI;
+// 隨機產生介於 0 ~ 1 之間的值
+Math.random();
+// 計算三角函數
+Math.sin(Math.PI / 2);
+// 計算次方
+Math.pow(2, 4);
+/* 靜態成員版本的幾何圓形類別 */
+class StaticCircleGeometry {
+    // 計算圓形的面積
+    static area(radius) {
+        return StaticCircleGeometry.PI * (radius ** 2);
+    }
+    // 計算圓形的周長
+    static circumference(radius) {
+        return 2 * StaticCircleGeometry.PI * radius;
+    }
+    // 提供使用者一個管道來取得 PI 的值
+    static getValueOfPI() {
+        return StaticCircleGeometry.PI;
+    }
+}
+StaticCircleGeometry.PI = 3.14;
+// 接觸 `private` 的靜態成員會被警告！
+// StaticCircleGeometry.PI;
+// 但是可以藉由公用靜態方法取得資訊
+StaticCircleGeometry.getValueOfPI();
+/* 使用 CircleGeometry */
+// 初始化半徑為單位 2 的圓
+const circleObj = new CircleGeometry(2);
+// 計算圓的面積
+const areaFromObj = circleObj.area();
+// 計算圓的周長
+const circumferenceFromObj = circleObj.circumference();
+/* 使用 StaticCircleGeometry */
+// 計算半徑為 2 的圓之面積
+const areaFromStaticMethod = StaticCircleGeometry.area(2);
+// 計算半徑為 2 的圓之周長
+const circumferenceFromStaticMethod = StaticCircleGeometry.circumference(2);
 //#endregion Day21
+//#region Day22
+class CircleGeometryV2 {
+    // 略...
+    // 初始化時需要的參數為半徑 radius
+    constructor(radius) {
+        this.radius = radius;
+        // 使用 readonly 在成員變數上
+        this.PI = 3.14;
+    }
+    // 使用取值方法 Getter Method
+    // 裡面不能有任何參數，否則會被記警告！
+    get area( /* 禁止放任意參數 */) {
+        // 沒有回傳任何值也是錯誤的行為！
+        return this.PI * (this.radius ** 2);
+    }
+    // 使用存值方法 Setter Method
+    // 裡面僅僅只能有一個參數，否則會被記警告！
+    set area(value /* , anotherValue: number */) {
+        // 半徑是面積先除以圓周率 PI 之後再開根號
+        // 開根號等效於取 0.5 次方的概念！
+        this.radius = (value / this.PI) ** 0.5;
+    }
+    // 計算圓形的周長
+    circumference() {
+        return 2 * this.PI * this.radius;
+    }
+}
+// 使用 readonly 在類別靜態屬性上
+CircleGeometryV2.staticPI = 3.14;
+// 初始化半徑為 2 的圓形
+const randomCircle = new CircleGeometryV2(2);
+// 取得圓形的面積
+console.log(randomCircle.area);
+// 改變半徑的值
+randomCircle.radius = 3;
+// 再次取得圓形面積
+console.log(randomCircle.area);
+// 初始化半徑為 2 的圓形
+const anotherRandomCircle = new CircleGeometryV2(2);
+// 取得圓形的半徑，應該等於 2
+// console.log(anotherRandomCircle.radius);
+// 取得圓形的面積
+// console.log(anotherRandomCircle.area);
+// 更改圓形的面積應該會連動到 radius 半徑的值
+// 這一次我們使用半徑為 5 的圓形面積作為指派值
+anotherRandomCircle.area = 3.14 * (5 ** 2);
+// 半徑應該約等於 5
+// console.log(anotherRandomCircle.radius);
+let areaOfCircle = anotherRandomCircle.area;
+/* readonly 模式 */
+// 可以被讀取
+anotherRandomCircle.PI;
+// 但是不能被覆寫！
+// anotherRandomCircle.PI = 3.1415926;
+// 類別的靜態屬性被標註 readonly 也無一例外
+CircleGeometryV2.staticPI;
+// 因為是 readonly，所以會被 TypeScript 提醒喔
+// CircleGeometryV2.staticPI = 3.1415926;
+//#endregion Day22
