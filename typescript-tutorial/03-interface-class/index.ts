@@ -548,80 +548,152 @@ const circumferenceFromStaticMethod = StaticCircleGeometry.circumference(2);
 class CircleGeometryV2 {
     // 使用 readonly 在成員變數上
     public readonly PI: number = 3.14;
-  
+
     // 使用 readonly 在類別靜態屬性上
     static readonly staticPI: number = 3.14;
-  
+
     // 略...
-  
+
     // 初始化時需要的參數為半徑 radius
-    constructor(public radius: number) {}
-  
+    constructor(public radius: number) { }
+
     // 使用取值方法 Getter Method
     // 裡面不能有任何參數，否則會被記警告！
     get area(/* 禁止放任意參數 */) {
-      // 沒有回傳任何值也是錯誤的行為！
-      return this.PI * (this.radius ** 2);
+        // 沒有回傳任何值也是錯誤的行為！
+        return this.PI * (this.radius ** 2);
     }
-  
+
     // 使用存值方法 Setter Method
     // 裡面僅僅只能有一個參數，否則會被記警告！
     set area(value: number /* , anotherValue: number */) {
-      // 半徑是面積先除以圓周率 PI 之後再開根號
-      // 開根號等效於取 0.5 次方的概念！
-      this.radius = (value / this.PI) ** 0.5;
+        // 半徑是面積先除以圓周率 PI 之後再開根號
+        // 開根號等效於取 0.5 次方的概念！
+        this.radius = (value / this.PI) ** 0.5;
     }
-  
+
     // 計算圓形的周長
     public circumference(): number {
-      return 2 * this.PI * this.radius;
+        return 2 * this.PI * this.radius;
     }
-  }
-  
+}
+
 // 初始化半徑為 2 的圓形
 const randomCircle = new CircleGeometryV2(2);
-  
+
 // 取得圓形的面積
 //console.log(randomCircle.area);
-  
+
 // 改變半徑的值
 randomCircle.radius = 3;
-  
+
 // 再次取得圓形面積
 //console.log(randomCircle.area);
-  
-  
+
+
 // 初始化半徑為 2 的圓形
 const anotherRandomCircle = new CircleGeometryV2(2);
-  
+
 // 取得圓形的半徑，應該等於 2
 // console.log(anotherRandomCircle.radius);
-  
+
 // 取得圓形的面積
 // console.log(anotherRandomCircle.area);
-  
+
 // 更改圓形的面積應該會連動到 radius 半徑的值
 // 這一次我們使用半徑為 5 的圓形面積作為指派值
 anotherRandomCircle.area = 3.14 * (5 ** 2);
-  
+
 // 半徑應該約等於 5
 // console.log(anotherRandomCircle.radius);
-  
+
 let areaOfCircle = anotherRandomCircle.area;
-  
-  /* readonly 模式 */
-  // 可以被讀取
+
+/* readonly 模式 */
+// 可以被讀取
 anotherRandomCircle.PI;
-  
+
 // 但是不能被覆寫！
 // anotherRandomCircle.PI = 3.1415926;
- 
+
 // 類別的靜態屬性被標註 readonly 也無一例外
 CircleGeometryV2.staticPI;
-  
+
 // 因為是 readonly，所以會被 TypeScript 提醒喔
 // CircleGeometryV2.staticPI = 3.1415926;
-  
-  
-  
 //#endregion Day22
+
+//#region Day23
+/* 擁有私有建構子的類別範例 */
+class ConstructIsForbidden {
+    private constructor(/* 參數 */) {
+        /* 初始化物件的成員 */
+    }
+}
+
+// 會被 TypeScript 叫！
+//let forbiddenObject = new ConstructIsForbidden();
+
+/* 簡單的單例模式示範 Singleton Pattern */
+class SingletonPerson {
+    // 該私有建構子裡面，具有某人的基本資料
+    // 其中，儘管裡面的資料是開放的，但都是唯讀的狀態
+    private constructor(
+        public readonly name: string,
+        public readonly age: number,
+        public readonly hasPet: boolean,
+    ) {
+
+    }
+    // 定義一個私有靜態屬性，存放此類別建構的物件資料
+    private static Instance: SingletonPerson = new SingletonPerson('Maxwell', 20, false);
+    // 定義一個公用靜態方法，負責回傳存放在此類別唯一的物件資料
+    static getInstance(): SingletonPerson {
+        return this.Instance;
+    }
+}
+// 取得單例模式的類別下建構出來的唯一物件
+const uniquePerson = SingletonPerson.getInstance();
+
+// console.log(uniquePerson);
+// console.log(uniquePerson.name);
+// console.log(uniquePerson.age);
+// console.log(uniquePerson.hasPet);
+
+/* 懶漢模式 */
+class LazySingletonPerson {
+    private constructor(
+        public readonly name: string,
+        public readonly age: number,
+        public readonly hasPet: boolean,
+    ) { }
+
+    // Day 2. 就提到過的 Nullable Type
+    private static Instance: LazySingletonPerson | null = null;
+    static getInstance(): LazySingletonPerson {
+        // 若是第一次呼叫，Instance 必為 null，因此進行單子的初始化
+        if (this.Instance === null) {
+            this.Instance = new LazySingletonPerson('Maxwell', 20, false);
+        }
+
+        return this.Instance;
+    }
+}
+class LazySingletonC {
+    private constructor(/* 成員變數或參數 */) {
+        /* 物件初始化成員的過程 */
+    }
+
+    // 將 Instance 一開始的值設定為 null
+    private static Instance: LazySingletonC | null = null;
+
+    // 如果是第一次呼叫 getInstance 才會建構物件
+    static getInstance(): LazySingletonC {
+        if (this.Instance === null) {
+            this.Instance = new LazySingletonC(/* 參數 */);
+        }
+
+        return this.Instance;
+    }
+}
+//#endregion Day23

@@ -413,11 +413,11 @@ CircleGeometryV2.staticPI = 3.14;
 // 初始化半徑為 2 的圓形
 const randomCircle = new CircleGeometryV2(2);
 // 取得圓形的面積
-console.log(randomCircle.area);
+//console.log(randomCircle.area);
 // 改變半徑的值
 randomCircle.radius = 3;
 // 再次取得圓形面積
-console.log(randomCircle.area);
+//console.log(randomCircle.area);
 // 初始化半徑為 2 的圓形
 const anotherRandomCircle = new CircleGeometryV2(2);
 // 取得圓形的半徑，應該等於 2
@@ -440,3 +440,35 @@ CircleGeometryV2.staticPI;
 // 因為是 readonly，所以會被 TypeScript 提醒喔
 // CircleGeometryV2.staticPI = 3.1415926;
 //#endregion Day22
+//#region Day23
+/* 擁有私有建構子的類別範例 */
+class ConstructIsForbidden {
+    constructor( /* 參數 */) {
+        /* 初始化物件的成員 */
+    }
+}
+// 會被 TypeScript 叫！
+//let forbiddenObject = new ConstructIsForbidden();
+/* 簡單的單例模式示範 Singleton Pattern */
+class SingletonPerson {
+    // 該私有建構子裡面，具有某人的基本資料
+    // 其中，儘管裡面的資料是開放的，但都是唯讀的狀態
+    constructor(name, age, hasPet) {
+        this.name = name;
+        this.age = age;
+        this.hasPet = hasPet;
+    }
+    // 定義一個公用靜態方法，負責回傳存放在此類別唯一的物件資料
+    static getInstance() {
+        return this.Instance;
+    }
+}
+// 定義一個私有靜態屬性，存放此類別建構的物件資料
+SingletonPerson.Instance = new SingletonPerson('Maxwell', 20, false);
+// 取得單例模式的類別下建構出來的唯一物件
+const uniquePerson = SingletonPerson.getInstance();
+console.log(uniquePerson);
+console.log(uniquePerson.name);
+console.log(uniquePerson.age);
+console.log(uniquePerson.hasPet);
+//#endregion Day23
