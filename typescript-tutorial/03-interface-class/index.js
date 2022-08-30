@@ -467,8 +467,321 @@ class SingletonPerson {
 SingletonPerson.Instance = new SingletonPerson('Maxwell', 20, false);
 // 取得單例模式的類別下建構出來的唯一物件
 const uniquePerson = SingletonPerson.getInstance();
-console.log(uniquePerson);
-console.log(uniquePerson.name);
-console.log(uniquePerson.age);
-console.log(uniquePerson.hasPet);
+// console.log(uniquePerson);
+// console.log(uniquePerson.name);
+// console.log(uniquePerson.age);
+// console.log(uniquePerson.hasPet);
+/* 懶漢模式 */
+class LazySingletonPerson {
+    constructor(name, age, hasPet) {
+        this.name = name;
+        this.age = age;
+        this.hasPet = hasPet;
+    }
+    static getInstance() {
+        // 若是第一次呼叫，Instance 必為 null，因此進行單子的初始化
+        if (this.Instance === null) {
+            this.Instance = new LazySingletonPerson('Maxwell', 20, false);
+        }
+        return this.Instance;
+    }
+}
+// Day 2. 就提到過的 Nullable Type
+LazySingletonPerson.Instance = null;
+class LazySingletonC {
+    constructor( /* 成員變數或參數 */) {
+        /* 物件初始化成員的過程 */
+    }
+    // 如果是第一次呼叫 getInstance 才會建構物件
+    static getInstance() {
+        if (this.Instance === null) {
+            this.Instance = new LazySingletonC( /* 參數 */);
+        }
+        return this.Instance;
+    }
+}
+// 將 Instance 一開始的值設定為 null
+LazySingletonC.Instance = null;
 //#endregion Day23
+//#region Day24
+var Color;
+(function (Color) {
+    Color[Color["White"] = 0] = "White";
+    Color[Color["Black"] = 1] = "Black";
+    Color[Color["Brown"] = 2] = "Brown";
+    Color[Color["Grey"] = 3] = "Grey";
+    Color[Color["Rainbow"] = 4] = "Rainbow";
+})(Color || (Color = {}));
+;
+class Horse {
+    constructor(name, color, type, noise = 'MeeeeeeeEeeééeéeée~') {
+        this.name = name;
+        this.color = color;
+        this.type = type;
+        this.noise = noise;
+    }
+    makeNoise() {
+        console.log(this.noise);
+    }
+    info() {
+        console.log(this.infoText);
+    }
+    // 子類別可以覆寫 infoText 成員方法
+    infoText() {
+        return `It is ${this.name} the ${Color[this.color]} ${this.type}.`;
+    }
+}
+/* 繼承類別範例 */
+class Unicorn extends Horse {
+    constructor(name) {
+        super(name, Color.Rainbow, 'Mystical Unicorn', 
+        // 獨角獸的叫聲到底是什麼，筆者也不清楚
+        'Nheeeeeeheeehehé~hehé~hehé~hehé~~~');
+    }
+    infoText() {
+        return `It's a mystical unicorn! Its name is ${this.name}!`;
+    }
+    // 獨角獸會吐彩虹色的嘔吐物
+    puke() {
+        console.log('Puking rainbow vomit!');
+    }
+}
+// 利用生物科技製造出一隻名為 Martin 的黑色小馬
+let aRandomHorsie = new Horse('Martin', Color.Black, 'Pony');
+// 對馬原本就有的屬性指派錯誤型別 => TS 覺得你錯了！
+// aRandomHorsie.color = 'Red';
+// 對馬植入新的屬性 => 難道你沒聽到動保團體的抗議嗎？
+// aRandomHorsie.isNatural = false;
+// 直接覆寫錯誤的值 => 我的馬到哪裡去？
+// aRandomHorsie = null;
+// 要覆寫就要用同為 Horse 型別的值進行完整覆寫
+// 另外：stallion 是 “騭”，馬的品種之一
+aRandomHorsie = new Horse('Toby', Color.Brown, 'Stallion');
+/* 類別得型別註記法 */
+// 1. 用常見的型別註記法
+let certainlyAHorsie = new Horse('Leo', Color.Black, 'Bronco');
+// 2. 用顯性型別註記法
+let certainlyAnotherHorsie = (new Horse('Wendy', Color.White, 'Mustang'));
+// 3. 用 `as` 型別註記法
+let certainlyTheOtherHorsie = new Horse('Alexius', Color.Grey, 'Foal');
+/* 繼承後的子類別之推論機制 */
+// 普通的 Unicorn
+let aRandomUnicorn = new Unicorn('Maxwell');
+// 註記為 Horse，不過被指派為 Unicorn
+let anotherHorsie = new Unicorn('Maximilian');
+// 嘔吐吧！獨角獸！
+// aRandomUnicorn.puke();
+// 你也跟著嘔吐吧！ => 它嘔吐不了...
+// anotherHorsie.puke();
+// 子類別看似代表父類別物件
+// let shouldBeUnicorn: Unicorn =
+//   new Horse(
+//     'Maxime',
+//     Color.Rainbow,
+//     'Mystical Unicorn',
+//     'Nyeeeeeeee~~'
+//   );
+// 宣告 Stallion 為 Horse 子類別，並且沒有多宣告更多成員
+class Stallion extends Horse {
+    constructor(name) {
+        super(name, Color.Brown, 'Stallion');
+    }
+}
+// 註記為 Stallion 型別的變數卻指派 Horse
+let shouldBeStallion = new Horse('Maxwell', Color.Brown, 'Stallion');
+// 定義兩種相似的類別
+class C1 {
+    constructor(prop) {
+        this.prop = prop;
+    }
+    publicMethod() {
+        return this.prop;
+    }
+}
+class C2 {
+    constructor(prop) {
+        this.prop = prop;
+    }
+    publicMethod() {
+        return this.prop;
+    }
+}
+let someObject = new C2('Hello');
+// 定義兩種相似的類別，但是有 private 模式
+class AnotherC1 {
+    constructor(prop, privateProp) {
+        this.prop = prop;
+        this.privateProp = privateProp;
+    }
+    publicMethod() {
+        return this.privateMethod();
+    }
+    privateMethod() {
+        return this.privateProp;
+    }
+}
+class AnotherC2 {
+    constructor(prop, privateProp) {
+        this.prop = prop;
+        this.privateProp = privateProp;
+    }
+    publicMethod() {
+        return this.privateMethod();
+    }
+    privateMethod() {
+        return this.privateProp;
+    }
+}
+function logTypeA(obj) { console.log(obj); }
+;
+// 事實上，只要結構ㄧ樣，管你是 Type 還是 Interface
+// 只要格式ㄧ樣都通過，就算參數很明確只能指定 TA 型別
+// logTypeA(<TA>{ hello: 'World' });
+// logTypeA(<TB>{ hello: 'World' });
+// logTypeA(<IA>{ hello: 'World' });
+// logTypeA(<IB>{ hello: 'World' });
+//#endregion Day24
+//#region Day25
+// 定義角色的介面
+var Role;
+(function (Role) {
+    Role["Swordsman"] = "Swordsman";
+    Role["Warlock"] = "Warlock";
+    Role["Highwayman"] = "Highwayman";
+    Role["BountyHunter"] = "Bounty Hunter";
+    Role["Monster"] = "Monster";
+})(Role || (Role = {}));
+;
+// 將遊戲角色與 ICharacter 介面進行綁定 
+class Character {
+    constructor(name, role) {
+        this.name = name;
+        this.role = role;
+        this.health = 50;
+        this.mana = 10;
+        this.strength = 10;
+        this.defense = 5;
+    }
+    attack(target) {
+        let verb;
+        // 根據不同的職業，進行不同的攻擊方式
+        switch (this.role) {
+            case Role.Swordsman:
+                verb = 'attacking';
+                break;
+            case Role.Warlock:
+                verb = 'cursing';
+                break;
+            case Role.Highwayman:
+                verb = 'ambushing';
+                break;
+            case Role.BountyHunter:
+                verb = 'threatening';
+                break;
+            default: throw new Error(`${this.role} didn't exist!`);
+        }
+        console.log(`${this.name} is ${verb} ${target.name}!`);
+    }
+}
+// 分別建立兩種不同的角色
+// const character1 = new Character('Maxwell', Role.Swordsman);
+// const character2 = new Character('Martin', Role.Highwayman);
+// 來互相傷害啊！
+// character1.attack(character2);
+// character2.attack(character1);
+// 建立簡單的角色
+let character = new Character('Maxwell', Role.Swordsman);
+// 從類別建立出來的物件
+let certainlyACharacter = new Character('Martin', Role.Highwayman);
+// 被推論為 Character 型別的變數可以呼叫 name 屬性
+character.name;
+// 被推論為 Character 型別的變數可以呼叫 health 屬性
+character.health;
+// 被註記為 ICharacter 型別的變數可以呼叫 name 屬性
+certainlyACharacter.name;
+// 被註記為 ICharacter 型別的變數，由於介面 ICharacter
+// 沒有 health 屬性，被 TypeScript 判定為有潛在問題
+// certainlyACharacter.health;
+// 新增的 Monster 類別有實踐 ICharacter 介面
+class Monster {
+    constructor(name) {
+        this.name = name;
+        this.role = Role.Monster;
+    }
+    attack(target) {
+        console.log(`${this.name} is attacking the ${target.role} - ${target.name}`);
+    }
+}
+// 宣告一個 Character 以及 Monster
+let aHumanCharacter = new Character('Maxwell', Role.Swordsman);
+let aMonster = new Monster('Sticky Slime');
+// Character 創建出來的物件之 attack 方法可以接收 Monster 類別創建的物件
+//aHumanCharacter.attack(aMonster);
+// Monster 創建出來的物件之 attack 方法也可以接收 Character 類別創建的物件
+//aMonster.attack(aHumanCharacter);
+class BountyHunter extends Character {
+    constructor(name) {
+        super(name, Role.BountyHunter);
+        // 賞金獵人會抓取人質或怪物，所以這裡會是用陣列型別
+        this.hostages = [];
+    }
+    // 定義名為 capture - 捕捉敵人的功能
+    // 第一個參數 target 是捕捉的目標
+    // 第二個參數 successRate 是捕捉到目標的機率 (0 ~ 1)
+    capture(target, successRate) {
+        const randomNumber = Math.random();
+        let message;
+        let targetTitle = `${target.name} the ${target.role}`;
+        // 賞金獵人成功抓取敵人必要條件是 randomNumber 必須大於 1 - successRate 的數值
+        // 用機率的講法是：敵人沒辦法逃脫的機率是 1 - successRate
+        // 因此，若 successRate = 1（100%），則敵人逃脫機率為 1 - successRate = 0
+        // 機率真是一門很深但也是令人頭痛的學問
+        if (randomNumber > (1 - successRate)) {
+            // 抓到敵人時，將敵人丟到 hostages 這個陣列
+            this.hostages = [...this.hostages, target];
+            message = `${this.name} has captured ${targetTitle}`;
+        }
+        else {
+            message = `${this.name} failed to capture ${targetTitle}`;
+        }
+        console.log(message);
+    }
+    // 販賣人質～
+    sellHostages() {
+        const totalPrice = this.hostages.length * 1000;
+        const hostagesInfo = this.hostages
+            .map((hostage) => `${hostage.name} the ${hostage.role}`)
+            .join('\n');
+        console.log(`
+  ${this.name} sells all the hostages, including:
+  ${hostagesInfo}
+  Receive Gold: $${totalPrice}
+      `);
+        this.hostages = [];
+    }
+}
+// 建立一個賞金獵人
+const bountyHunter = new BountyHunter('Maxwell');
+// 建立一個懸賞的普通角色
+const wantedCharacter = new Character('Martin', Role.Highwayman);
+// 建立一個怪物
+const wantedMonster = new Monster('Eikthyrnir');
+// 建立一個亡命之徒
+const desperado = new Character('Legendary Joe', Role.Highwayman);
+// 百分之百可以抓到普通角色
+bountyHunter.capture(wantedCharacter, 1);
+// 可能可以抓到怪物
+bountyHunter.capture(wantedMonster, 0.5);
+// 不太可能抓到亡命之徒
+bountyHunter.capture(desperado, 0.01);
+// 賣掉人質
+bountyHunter.sellHostages();
+// 普通角色是否能夠回擊呢？
+wantedCharacter.attack(bountyHunter);
+// 怪物是否也能夠回擊呢？
+wantedMonster.attack(bountyHunter);
+// 如果被強行註記為 ICharacter 的變數，是否能夠接受 BountyHunter 類型的值？
+const anyCharacter = new BountyHunter('Alexius');
+// 註記為 ICharacter 的 BountyHunter 是否可以呼叫 capture 方法？
+//anyCharacter.capture(wantedMonster, 0.5);
+//#endregion Day25
