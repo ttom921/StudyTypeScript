@@ -11,7 +11,4 @@ export class Warlock extends Character {
             new BasicWand()
         );
     }
-    // public attack(target: Character): void {
-    //     console.log(`${this.name} casts magic and pierced through ${target.name}`!);
-    // }
 };

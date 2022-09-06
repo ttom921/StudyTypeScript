@@ -1,55 +1,41 @@
+import { StabAttack } from './abilities/StabAttack';
+
+import { Swordsman } from "./characters/Swordsman";
+import { Warlock } from "./characters/Warlock";
+import { BasicSword } from "./weapons/BasicSword";
 import { BasicWand } from './weapons/BasicWand';
 import { Dagger } from './weapons/Dagger';
-import { StabAttack } from './abilities/StabAttack';
-import { Warlock } from './characters/Warlock';
-import { Swordsman } from './characters/Swordsman';
-import { Character } from './characters/Character';
-import { Role } from './characters/Role';
-
-// const swordsman = new Character('Maxwell', Role.Swordsman);
-// swordsman.introduce();
-
-// const swordsman = new Swordsman('Maxwell');
-// const warlock = new Warlock('Martin');
-// swordsman.introduce();
-// warlock.introduce();
 
 
 // const swordsman = new Swordsman('Maxwell');
 // const warlock = new Warlock('Martin');
-
-// console.log('swordsman attacking the warlock: ');
+// //使用初始化BasicSword，其中BasicSword綁定的是MeleeAttack
+// console.log('Using BasicSword - MeleeAttack:');
 // swordsman.attack(warlock);
 
-// console.log('warlock attacking the swordsman: ');
-// warlock.attack(swordsman);
-
-// const swordsman = new Swordsman('Maxwell');
-// const warlock = new Warlock('Martin');
-// //Using Default: MeleeAttack
-// console.log('Using MeleeAttack:');
+// //改變武器，使用dagger, 其中Dagger綁定的是StabAttack
+// console.log('Using Dagger - StabAttack');
+// swordsman.equip(new Dagger());
 // swordsman.attack(warlock);
 
-// //switch to StabAttack
-// swordsman.switchAttachStrategy(new StabAttack());
-// // Using New Strategy: StabAttack
-// console.log('Using StabAttack:');
-// swordsman.attack(warlock);
+// //切探成BasicWand 會丟出例外，因為Swordsman不能使用
+// try {
+//     swordsman.equip(new BasicWand());
+// } catch (err) {
+//     console.log(err);
+// }
+
+const swordUsingStab = new BasicSword();
+swordUsingStab.switchAttackStrategy(new StabAttack());
 
 const swordsman = new Swordsman('Maxwell');
 const warlock = new Warlock('Martin');
-//使用初始㑊時的BasicSword
-console.log(`Using BasicSword-MeleeAttack:`);
+//使用初始化BasicSword，其中BasicSword綁定的是MeleeAttack
+console.log('Using BasicSword - MeleeAttack:');
 swordsman.attack(warlock);
 
-//切換成匕首Dagger
-swordsman.equip(new Dagger());
+//改變武器，使用綁定為StabAttack模式的BasicSword
 console.log('Using Dagger - StabAttack');
+swordsman.equip(swordUsingStab);
 swordsman.attack(warlock);
 
-//切探成BasicWand 會丟出例外，因為Swordsman不能使用
-try {
-    swordsman.equip(new BasicWand());
-} catch (err) {
-    console.log(err);
-}
