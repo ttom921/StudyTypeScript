@@ -1,11 +1,14 @@
+import { Equipment } from './../equipments/Equipment';
 import { Attack } from "../abilities/Attack";
 import { Character } from "../characters/Character";
 import { Role } from "../characters/Role";
+import { Equipments } from '../equipments/Equipments';
 
 //將原本介面的Weapon晉升障抽象類別後，使用absract class
-export abstract class Weapon {
+export abstract class Weapon implements Equipment {
     // 裝備當然要有名稱
     abstract name: string;
+    public type = Equipments.Weapon;
 
     // 有些裝備會限制哪些職業的角色使用
     // 如果是空代表任何職業都可以使用

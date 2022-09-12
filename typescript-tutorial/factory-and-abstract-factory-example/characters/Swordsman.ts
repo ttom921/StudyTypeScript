@@ -1,3 +1,4 @@
+import { SwordsmanEquipmentFactory } from '../equipments/SwordsmanEquipmentFactory';
 import { BasicSword } from './../weapons/BasicSword';
 //import { MeleeAttack } from './../abilities/MeleeAttack';
 import { Character } from './Character';
@@ -5,11 +6,13 @@ import { Role } from './Role';
 
 export class Swordsman extends Character {
     constructor(name: string) {
+        let SEF = new SwordsmanEquipmentFactory();
         super(
             name,
             Role.Swordsman,
-            //選擇初始化的武器!
-            new BasicSword(),
+            //由工廠幫我們製倫武器跟防員
+            SEF.createWeapon(),
+            SEF.createArmour()
         );
     }
 };
