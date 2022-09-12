@@ -1,15 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Swordsman = void 0;
-const BasicSword_1 = require("./../weapons/BasicSword");
+const SwordsmanEquipmentFactory_1 = require("../equipments/SwordsmanEquipmentFactory");
 //import { MeleeAttack } from './../abilities/MeleeAttack';
 const Character_1 = require("./Character");
 const Role_1 = require("./Role");
 class Swordsman extends Character_1.Character {
     constructor(name) {
+        let SEF = new SwordsmanEquipmentFactory_1.SwordsmanEquipmentFactory();
         super(name, Role_1.Role.Swordsman, 
-        //選擇初始化的武器!
-        new BasicSword_1.BasicSword());
+        //由工廠幫我們製作武器跟防員
+        SEF.createWeapon(), SEF.createArmour());
     }
 }
 exports.Swordsman = Swordsman;

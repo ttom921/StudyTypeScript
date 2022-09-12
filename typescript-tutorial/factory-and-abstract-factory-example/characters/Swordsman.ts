@@ -10,7 +10,7 @@ export class Swordsman extends Character {
         super(
             name,
             Role.Swordsman,
-            //由工廠幫我們製倫武器跟防員
+            //由工廠幫我們製作武器跟防員
             SEF.createWeapon(),
             SEF.createArmour()
         );
