@@ -39,13 +39,11 @@ namespace MyMath {
 // console.log(MyMath.CircumferenceOfRectangel(50, 100));
 
 //印出圓周率
-console.log(Circle.PI);
-//計算半徑為10的圓面積
-console.log(Circle.area(10));
-//計算半徑為20的圓周長
-console.log(Circle.circumference(20));
+console.log(MyMath.Circle.PI);
+//計算半徑為5的圓面積
+console.log(MyMath.Circle.area(5));
 
-//計算20X30長方形面積
-console.log(Rectanle.area(10, 20));
-//計算 50X100長方形周長
-console.log(Rectanle.circumference(50, 100));
+
+
+//計算 20X30長方形周長
+console.log(MyMath.Rectanle.circumference(20, 30));
