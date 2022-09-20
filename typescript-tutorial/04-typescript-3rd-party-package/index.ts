@@ -1,3 +1,5 @@
+// 載入jquery
+import $ from 'jquery';
 
 //當網站的元素載入時執行
 

@@ -4,10 +4,20 @@
 <head>
     <title>3rd Party Package & TypeScript Definition Files</title>
 </head>
-<!--引入jQuery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!--引入編譯後的結果-->
+
+<!--將requireJS與Compile 過後的AMD檔案import 進去-->
+<script src="./require.js"></script>
 <script src="./index.js"></script>
+<script>
+    //rquireJS設定,記得必須指定jquery的路徑
+    requirejs.config({
+        paths: {
+            'jquery': './node_modules/jquery/dist/jquery.min'
+        }
+    });
+    //執行index.js
+    require(['index'])
+</script>
 
 <body>
     <button id="main-btn">Clock Me!</button>
