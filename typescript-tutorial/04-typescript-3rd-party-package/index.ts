@@ -1,3 +1,4 @@
+
 //當網站的元素載入時執行
 
 $(document).ready(function () {
