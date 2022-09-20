@@ -2,13 +2,16 @@
 <html lang="en">
 
 <head>
-    <title>test Project Config</title>
+    <title>3rd Party Package & TypeScript Definition Files</title>
 </head>
+<!--引入jQuery-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--引入編譯後的結果-->
+<script src="./index.ts"></script>
 
 <body>
-    <button id="click-me-btn">Clock Me!</button>
-    <p>You clicked me <span id="count">0</span> times! </p>
-    <script src="./build/index.js"></script>
+    <button id="main-btn">Clock Me!</button>
+    <p>You've clicked <span id="count">0</span> times! </p>
 </body>
 
 </html>
