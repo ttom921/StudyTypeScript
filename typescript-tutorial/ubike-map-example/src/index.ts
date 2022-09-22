@@ -2,6 +2,9 @@
 
 import L, { LatLngExpression } from 'leaflet';
 
+import fetchData from './fetchData';
+
+
 import mapConfig from './map.config';
 
 const {
@@ -19,3 +22,9 @@ map.setView(coordinate, zoomLevel);
 
 //設定地圖的底圖為加到地圖的個體中
 L.tileLayer(tileLayerURL).addTo(map);
+
+//使用fetchData,由於fetch函式回傳的是Promise
+//因此必須接上.then來印出資料
+fetchData().then(data => {
+    console.log(data);
+});
