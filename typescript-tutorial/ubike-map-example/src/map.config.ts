@@ -2,7 +2,7 @@ import { LatLngExpression } from 'leaflet';
 // ./src/map.config.ts
 
 //使用型別化名
-type MapConfig = {
+export type MapConfig = {
     coordinate: LatLngExpression,
     zoomLevel: number,
     tileLayerURL: string,

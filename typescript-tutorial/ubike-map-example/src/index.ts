@@ -7,7 +7,8 @@ import fetchData from './fetchData';
 
 
 import mapConfig from './map.config';
-import { Districts } from './data';
+import { Districts, UBikeInfo } from './data';
+import UBikeMapFacade from './MapFacade';
 
 
 /**將所有的行政區 Options的HTML DOM建立起來 */
@@ -27,26 +28,18 @@ distircts.forEach((d) => {
     $selectDistrict.appendChild($optionTag);
 });
 
-//以下是建立地圖
-const {
-    coordinate,
-    zoomLevel,
-    tileLayerURL,
-    containerID,
-} = mapConfig;
 
-// 建立Leaflet 地圖個體,'map' 代表選擇ID為'map'的HTML元素
-const map = L.map(containerID);
-
-//設定地圖要聚焦的座標與縮放等級
-map.setView(coordinate, zoomLevel);
-
-//設定地圖的底圖為加到地圖的個體中
-L.tileLayer(tileLayerURL).addTo(map);
-
-
-//新增 map layer 負責渲染所有的marker
-let markerLayer: LayerGroup;
+/**建立UBike地圖外觀 */
+const mapFacade = new UBikeMapFacade(
+    mapConfig,
+    function (info: UBikeInfo) {
+        return `
+        <p>${info.regionName} - ${info.stopName}</p>
+        <p>總自行車數：${info.totalBikes}</p>
+        <p>可用自行車數：${info.availableBikes}</p>
+        `;
+    }
+);
 
 //取出目前的行政區
 let currentDistrict = $selectDistrict?.value as Districts;
@@ -57,28 +50,8 @@ function updateUBikeMap(district: Districts) {
         // UBike 資料轉換成點位的邏輯
         //1. 生將資料根據選到的行政區進行過濾的動作
         const selectData = data.filter(info => info.regionName === district);
-        // 2. 將selectData裡面的UBikeInfo轉換成Leaflet Marker
-        const markers = selectData.map(data => {
-            //使用L.Marker 裡面填入 LatLngExpression
-            const marker = new L.Marker(data.latLng);
-            //顯示UBike的資料
-            marker.bindTooltip(`
-        <p>${data.regionName} - ${data.stopName}</p>
-        <p>總自行車數:${data.totalBikes}</p>
-        <p>可用自行車數:${data.availableBikes}</p>
-        `);
-            marker.on('mouseover', () => {
-                marker.openTooltip();
-            });
-            marker.on('mouserleave', () => {
-                marker.closeTooltip();
-            });
-
-            return marker;
-        });
-        //3. 將所有的Marker丟進LayerGroup並新增到地圖裡
-        markerLayer = L.layerGroup(markers);
-        markerLayer.addTo(map);
+        // 2. 只要把要渲染的UBike點位輸入進去
+        mapFacade.pinStops(selectData);
     });
 }
 updateUBikeMap(currentDistrict);
@@ -89,9 +62,15 @@ $selectDistrict?.addEventListener('change', (event) => {
     let { value } = event.target as HTMLSelectElement;
     currentDistrict = value as Districts;
 
-    //2.將原本的Marker除掉
-    markerLayer.remove();
+    // //2.將原本的Marker除掉
+    // markerLayer.remove();
+    //改成使用UBikeMapFacade處理掉
+    mapFacade.clearStops();
+
     //3.更新地圖
     updateUBikeMap(currentDistrict);
+
+    //4.移動焦點
+    mapFacade.flyto(currentDistrict);
 });
 
