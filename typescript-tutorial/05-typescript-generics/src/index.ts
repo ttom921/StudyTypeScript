@@ -235,24 +235,24 @@ let traverseCallback = function (el: number, index: number) {
     console.log(`Index ${index} - Value ${el}`);
 }
 //使用 traverseElements<number>
-traverseElements<number>(
-    numberArrayInput,
-    traverseCallback,
-);
-//合併簡化結果
-traverseElements<number>(
-    [2, 3, 5, 7, 11] as Array<number>,
-    function (el: number, index: number) {
-        console.log(`Index ${index} - Value ${el}`)
-    }
-);
-//最終簡化結果
-traverseElements<number>(
-    [2, 3, 5, 7, 11],
-    function (el, index) {
-        console.log(`Index ${index} - Value ${el}`)
-    }
-);
+// traverseElements<number>(
+//     numberArrayInput,
+//     traverseCallback,
+// );
+// //合併簡化結果
+// traverseElements<number>(
+//     [2, 3, 5, 7, 11] as Array<number>,
+//     function (el: number, index: number) {
+//         console.log(`Index ${index} - Value ${el}`)
+//     }
+// );
+// //最終簡化結果
+// traverseElements<number>(
+//     [2, 3, 5, 7, 11],
+//     function (el, index) {
+//         console.log(`Index ${index} - Value ${el}`)
+//     }
+// );
 //#endregion Day 43
 
 //#region Day 44
@@ -360,3 +360,170 @@ class Cchild2<T, U = T> extends Cparent<T, U>{ }
 class Cchild3<T, U extends T> extends Cparent<T, U>{ }
 
 //#endregion Day 44
+
+//#region Day 45
+/**類別綁定介面，且介面為泛用介面的狀況 */
+// MyLinkedList 為普通類別，綁定 LinkedList<T>
+// class MyLinkedList implements LinkedList<T>{ }
+
+// // MyGenericLonkedList 為泛用類別，綁定 LinkedList<T>
+// class MyGenericLonkedList<T> implements LinkedList<T>{ }
+
+//實踐 LinkedListNode<T> 介面
+
+class GenericLinkedListNode<T> implements LinkedListNode<T>{
+    public next: LinkedListNode<T> | null = null;
+    constructor(public value: T) { }
+}
+
+//實踐 LinkedList<T> 介面
+class GenericLinkedList<T> implements LinkedList<T>{
+    public head: LinkedListNode<T> | null = null;
+    public length() {
+        // 如果連 head Node 都為 null就代表沒有長度
+        if (this.head === null) return 0;
+
+        let count = 0;
+        let currentNode: LinkedListNode<T> | null = this.head;
+        //使用while-loop 進行計算 LinkedList 長度的迭代
+        while (currentNode !== null) {
+            currentNode = currentNode.next;
+            count++;
+        }
+        return count;
+    }
+    public at(index: number): LinkedListNode<T> | null {
+        const length = this.length();
+
+        //如果長度小於 index 則無條件視為 out of bound.
+        // 直托丟出 Error
+        //
+        // index 由 0 開始計算，跟陣列的概念一模一樣
+        // 如：
+        // - 長度為 0 的鏈結串列，index 為 0 必須丟出 error
+        // - 長度為 3 的鏈結串列，index 為2 是最後一個值
+        //   但 3 以上則必須丟出 error
+        if (index >= length) throw new Error('Index out of bound');
+
+        // 以下取得實際的 LinkedListNode 值
+        let currentIndex = 0;
+        let currentNode = this.head as LinkedListNode<T>;
+        while (currentIndex !== index) {
+            currentNode = currentNode.next as LinkedListNode<T>;
+            currentIndex++;
+        }
+        return currentNode;
+    }
+    public insert(index: number, value: T): void {
+        const length = this.length();
+        const newNode = new GenericLinkedListNode(value);
+
+        //如果長度小於 index 值就選擇私出 'Out of bound' Error
+        if (length < index) throw new Error('Index out of bound');
+
+        // 但是若剛好等於 index 值，代表要插入新的節點
+        else if (length == index) {
+            if (index === 0) {
+                this.head = newNode;
+            } else {
+                const node = this.at(index - 1) as LinkedListNode<T>;
+                node.next = newNode;
+            }
+        }
+        //長度大於 index 值，就代從中插入新的 LinkedListNode
+        else {
+            if (index === 0) {
+                const origialHead = this.head;
+                this.head = newNode;
+                this.head.next = origialHead;
+            } else {
+                const prevNode = this.at(index - 1) as LinkedListNode<T>;
+                const originalNode = prevNode.next as LinkedListNode<T>;
+                prevNode.next = newNode;
+                newNode.next = originalNode;
+            }
+        }
+    }
+    public remove(index: number): void {
+        if (index > this.length()) throw new Error('Index out of bound');
+        if (index < 0) throw new Error('Index out of bound');
+        else if (index == 0) {
+            const origialHead = this.head;
+            //長度剛好是一個節點
+            if (this.length() == 1) {
+                if (this.head !== null)
+                    this.head.next = null
+                this.head = null;
+            } else {
+                //將 head 的下一個變成 head
+                const nextNode = origialHead?.next as LinkedListNode<T>;
+                this.head = nextNode;
+                this.head.next = nextNode.next;
+            }
+        } else {
+            const prevNode = this.at(index - 1) as LinkedListNode<T>;
+            //剛好最後一個
+            if (this.length() == index + 1) {
+                prevNode.next = null;
+            } else {
+                const currentNode = this.at(index) as LinkedListNode<T>;
+                prevNode.next = currentNode.next;
+            }
+        }
+    }
+    public getInfo() {
+        let currentNode = this.head;
+        let currentIndex = 0;
+        while (currentNode != null) {
+            console.log(`Index ${currentIndex}: ${currentNode.value}`);
+            currentNode = currentNode.next;
+            currentIndex++;
+        }
+    }
+}
+
+// 宣告一個新的鏈結串列，型別參數的值為 number
+const l = new GenericLinkedList<number>();
+
+//插入 123 在index =0 的位置，此時錄結串列為：
+// [123]
+l.insert(0, 123);
+//插入 456 在index =1 的位置，此時錄結串列為：
+// [123]  -> [456]
+l.insert(1, 456);
+//插入 789 在index =2 的位置，此時錄結串列為：
+// [123]  -> [456] -> [789]
+l.insert(2, 789);
+
+//插入 12321 在index =1 的位置，此時錄結串列為：
+// [123]  -> [12321] -> [456] -> [789]
+l.insert(1, 12321);
+//檢視結果
+l.getInfo();
+//
+//檢視鏈結串列中 index =0 ~ 3 的元素之值：
+// 由於我們鄗定 l.at(index) where index = 0 ~3
+// 100% 絕對是 LinkedListNode<number> ，而非 null
+// 因此採取顯示註記的動作
+console.log((l.at(0) as LinkedListNode<number>).value);
+console.log((l.at(1) as LinkedListNode<number>).value);
+console.log((l.at(2) as LinkedListNode<number>).value);
+console.log((l.at(3) as LinkedListNode<number>).value);
+
+// 如果超出範圍應該會直彈出錯誤訊息，這裡用try...catch...
+// try {
+//     l.at(4)
+// } catch (error) {
+//     console.log('Out of bound error caugh ', error);
+// }
+// [123]  -> [12321] -> [456] -> [789]
+// l.remove(0);
+// l.remove(0);
+// l.remove(0);
+// l.remove(0);
+// l.getInfo();
+l.remove(1);
+l.getInfo();
+
+
+//#endregion Day 45
