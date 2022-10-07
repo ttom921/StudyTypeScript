@@ -131,36 +131,144 @@ function sendRequestAsPromise(): Promise<string> {
 }
 
 // 設定三個計時器
-console.time('1st Request Received');
-console.time('2nd Request Received');
-console.time('3rd Request Received');
+// console.time('1st Request Received');
+// console.time('2nd Request Received');
+// console.time('3rd Request Received');
 
-let attempts = 1;
-// 第一次送出 request - 為一個 Promise<string>
-sendRequestAsPromise()
-    .then(function (result) {
-        // 第一次請求送完時的時間
-        console.timeEnd('1st Request Received');
-        console.log(`1st attempt ${result}`);
-        attempts++;
-        // 送出第二次請求 - 回傳一個 Promise<string>
-        return sendRequestAsPromise();
-    })
-    .then(function (result) {
-        // 第二次請求送完時的時間
-        console.timeEnd('2nd Request Received');
-        console.log(`2nd attempt ${result}`);
-        attempts++;
-        // 送出第三次請求 - 回傳一個 Promise<string>
-        return sendRequestAsPromise();
-    }).then(function (result) {
-        // 第三次請求送完時的時間
-        console.timeEnd('3rd Request Received');
-        console.log(`3rd attempt ${result}`);
+// let attempts = 1;
+// // 第一次送出 request - 為一個 Promise<string>
+// sendRequestAsPromise()
+//     .then(function (result) {
+//         // 第一次請求送完時的時間
+//         console.timeEnd('1st Request Received');
+//         console.log(`1st attempt ${result}`);
+//         attempts++;
+//         // 送出第二次請求 - 回傳一個 Promise<string>
+//         return sendRequestAsPromise();
+//     })
+//     .then(function (result) {
+//         // 第二次請求送完時的時間
+//         console.timeEnd('2nd Request Received');
+//         console.log(`2nd attempt ${result}`);
+//         attempts++;
+//         // 送出第三次請求 - 回傳一個 Promise<string>
+//         return sendRequestAsPromise();
+//     }).then(function (result) {
+//         // 第三次請求送完時的時間
+//         console.timeEnd('3rd Request Received');
+//         console.log(`3rd attempt ${result}`);
 
-    })
-    .catch(function (message) {
-        console.log(`Failed in the ${attempts} attempts: ${message}`);
-    });
+//     })
+//     .catch(function (message) {
+//         console.log(`Failed in the ${attempts} attempts: ${message}`);
+//     });
 
 //#endregion Day 48
+
+//#region Day 49
+/**陽春的 Generator Function */
+function* numbersIteratorGenerator() {
+    yield 1;
+    yield 2;
+    yield 3;
+    yield 4;
+    yield 5;
+}
+
+// 從 Generator Function 建立一個迭代器
+const numbersIter = numbersIteratorGenerator();
+
+// //以下連續呼叫7次 next 方法
+// console.log(numbersIter.next());
+// console.log(numbersIter.next());
+// console.log(numbersIter.next());
+// console.log(numbersIter.next());
+// console.log(numbersIter.next());
+// console.log(numbersIter.next());
+// console.log(numbersIter.next());
+
+
+/**裡面沒有 return 表達式 */
+function* generator1() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+/**最後不是使用yield ,而是return表達式 */
+function* generator2() {
+    yield 1;
+    yield 2;
+    return 3;
+}
+// const numbersIter1 = generator1();
+// console.log(numbersIter1.next());
+// console.log(numbersIter1.next());
+// console.log(numbersIter1.next());
+// console.log(numbersIter1.next());
+// console.log(numbersIter1.next());
+
+// const numbersIter2 = generator2();
+// console.log(numbersIter2.next());
+// console.log(numbersIter2.next());
+// console.log(numbersIter2.next());
+// console.log(numbersIter2.next());
+// console.log(numbersIter2.next());
+
+function* generatorFunc() {
+    console.log('Iterator created....');
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+// // 試問呼叫 generatorFunc 時，console.log 會先動？
+// console.log('Before create iterator');
+// let iterator = generatorFunc();
+// console.log('After create iterator');
+
+// // 還是等到 next 被呼叫前後才會動作？
+// console.log('Before invoke 1st next method');
+// console.log(iterator.next());
+// console.log('After invoke 1st next method');
+
+
+/**費候內契數列 */
+function* fibonacci() {
+    let n0 = 1;
+    let n1 = 1;
+    while (true) {
+        yield n0;
+        //使用ES6 Destructure語法
+        [n0, n1] = [n1, n0 + n1];
+    }
+}
+// //試問以下會出現什麼樣的結果？
+// const fbSeries = fibonacci();
+// for (let i = 0; i < 10; i++) {
+//     console.log(fbSeries.next(10));
+// }
+
+
+function* summationGenerator(defaultValue: number = 0): any {
+    let total = defaultValue;
+
+    while (true) {
+        total += yield total;
+    }
+}
+
+let summationIter = summationGenerator();
+// console.log(summationIter.next(5));
+// console.log(summationIter.next(7));
+// console.log(summationIter.next(11));
+
+function* positiveNumberIterator() {
+    let number = 1;
+
+    while (true) {
+        yield number;
+        number += 1;
+    }
+}
+//#endregion Day 49
