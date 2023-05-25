@@ -1,0 +1,59 @@
+{
+  /*
+  tsconfig.json 是ts編譯器的配罝文件，ts編譯器可以根據它的信息來對代碼進行編譯
+    "include" 用來指定哪些ts文件需要被編譯
+      路徑: ** 表示任意目錄
+             * 表示任意文件
+    "exclude" 不需要被編譯的文件目錄         
+  */
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [],
+  /*
+  compilerOptions 編譯器的選項
+  */
+  "compilerOptions": {
+    //target 用來指定ts被編譯成那一個ES的版本
+    //'es3', 'es5', 'es6', 'es2015', 'es2016', 'es2017', 'es2018', 'es2019', 'es2020', 'es2021', 'esnext'
+    "target": "es6",
+    //module 指定要使用的模塊化的規範
+    //'none', 'commonjs', 'amd', 'system', 'umd', 'es6', 'es2015', 'es2020', 'es2022', 'esnext', 'node12', 'nodenext'
+    "module": "es6",
+    //lib 用來指定項目中要使用的庫
+    //'es5', 'es6', 'es2015', 'es7', 'es2016', 'es2017', 'es2018', 'es2019', 
+    // 'es2020', 'es2021', 'esnext', 'dom', 'dom.iterable', 'webworker', 
+    //'webworker.importscripts', 'webworker.iterable', 'scripthost', 
+    //'es2015.core', 'es2015.collection', 'es2015.generator', 'es2015.iterable', 
+    //'es2015.promise', 'es2015.proxy', 'es2015.reflect', 'es2015.symbol', 
+    //'es2015.symbol.wellknown', 'es2016.array.include', 'es2017.object', 
+    //'es2017.sharedmemory', 'es2017.string', 'es2017.intl', 'es2017.typedarrays', 
+    //'es2018.asyncgenerator', 'es2018.asynciterable', 'es2018.intl', 
+    //'es2018.promise', 'es2018.regexp', 'es2019.array', 'es2019.objee', 'esnext.weakref'
+    //"lib": [],
+    //outDir 用來指定編譯後文件所在的目錄
+    "outDir": "./dist",
+    //將代碼合併為一個文件
+    //設置outFile後，所有的全局作用域中的代碼會合併到同一個文件中
+    //"outFile": "./dist/app.js"
+    //是否對js文件進行編譯，默認是false
+    "allowJs": false,
+    // 是否檢查js代碼是否符合語法規範，默認值false
+    "checkJs": false,
+    //是否移除註解
+    "removeComments": false,
+    //不生成編譯的文件
+    "noEmit": false,
+    //當有錯誤時不生成編譯文件
+    "noEmitOnError": false,
+    //所有嚴格檢查的總開關
+    "strict": true,
+    //用來設置編譯後的文件是否使用嚴格模式，默認false
+    "alwaysStrict": false,
+    //不允許隱式的any類型
+    "noImplicitAny": true,
+    //不允許不明確類型的this
+    "noImplicitThis": true,
+    //嚴格的檢查空值
+    "strictNullChecks": true,
+  }
